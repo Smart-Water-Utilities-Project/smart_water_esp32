@@ -7,6 +7,8 @@ struct Config {
   // WiFi Connection
   static const char* ssid;
   static const char* pass;
+
+  static const int waterflowPin = 36;
   
 };
 
@@ -14,5 +16,5 @@ const int Config::server_port = 25565;
 const String Config::server_path = "/";
 const String Config::server_host = "192.168.XX.XX";
 
-const char* Config::ssid = "XXXX";
-const char* Config::pass = "XXXX";
+const char* Config::ssid = "YFHD";
+const char* Config::pass = "HAHAASSHOLE";

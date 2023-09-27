@@ -1,4 +1,3 @@
-#include "config.h"
 #include <WebSocketClient.h>
 
 class WebSocketHandler {
