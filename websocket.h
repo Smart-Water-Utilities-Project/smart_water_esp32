@@ -26,42 +26,53 @@ void WebSocketHandler::server_handshake(void) {
   webSocketClient.path = (char*) Config::server_path.c_str();
   webSocketClient.host = (char*) (String(Config::server_host) + ":" + String(Config::server_port)).c_str();
   if (webSocketClient.handshake(wifiClient)) {
-    Serial.println("Handshake successful");
+    Serial.println("[WebSocket] Handshake successful");
   } else {
-    Serial.println("Handshake failed, restart in 5 seconds");
-    delay(5000);
-    ESP.restart();
+    Serial.println("[WebSocket] Handshake failed, retry in a second");
+    delay(1000);
+    server_connect();
+    server_handshake();
   }
 };
 
 void WebSocketHandler::server_connect(void) {
   // Connect to the websocket server
+  Serial.println("[WebSocket] Attempting to connect to host: " + Config::server_host);
   if (wifiClient.connect(Config::server_host.c_str(), (int&)Config::server_port)) {
-    Serial.println("Connected");
+    Serial.println("[WebSocket] The host has been connected successfully");
   } else {
-    Serial.println("Connection failed, restart in 5 seconds");
-    delay(5000);
-    ESP.restart();
+    Serial.println("[WebSocket] Failed to connect to the host, retry in a seconds");
+    delay(1000);
+    server_connect();
   }
 };
 
 void WebSocketHandler::wifi_connect() {
   // Connect to a WiFi network
-  Serial.print("\nConnecting to" + String(Config::ssid) + "\n");
+  Serial.print("\n[Wifi] Connecting to " + String(Config::ssid));
   WiFi.begin((char*)Config::ssid,(char*)Config::pass);
   
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    u8g2.drawXBM(112, 0, 16, 16, gImage_wifi_connecting_0);
+    u8g2.sendBuffer();
+    delay(250);
+    u8g2.drawXBM(112, 0, 16, 16, gImage_wifi_connecting_1);
+    u8g2.sendBuffer();
+    delay(250);
     Serial.print(".");
   }
 
-  Serial.println("\nWiFi connected with IP: " + String(WiFi.localIP()) + "\n");
-  
+  Serial.println("\n[Wifi] WiFi connected successfully, IP: " + WiFi.localIP().toString());
+  u8g2.drawXBM(112, 0, 16, 16, gImage_wifi_connect);
+  u8g2.sendBuffer();
 };
 
 String WebSocketHandler::listen() {
   String str_buffer;
-  if (!(wifiClient.connected())) return "";
+  if (!(wifiClient.connected())) {
+    Serial.println("[DEBUG] Data listen failed.");
+    return "";
+  }
   webSocketClient.getData(str_buffer);
   
   Serial.println("Received data: " + String(str_buffer));
