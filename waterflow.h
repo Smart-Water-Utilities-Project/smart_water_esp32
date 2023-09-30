@@ -1,6 +1,6 @@
 class WaterflowHandler {
   public: 
-    int readpin = (int) Config::waterflowPin;
+    int readpin = (int) waterflowPin;
     int cutTime = 1000;
     int currentPulse;
     int numPulse =0;

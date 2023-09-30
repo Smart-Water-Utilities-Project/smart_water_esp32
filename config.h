@@ -1,20 +1,11 @@
-struct Config {
-  // Websocket Server IP
-  static const int server_port;
-  static const String server_path;
-  static const String server_host;
+// WiFi related settings
+#define wifi_ssid "wifi_name"
+#define wifi_pass "wifi_psk"
 
-  // WiFi Connection
-  static const char* ssid;
-  static const char* pass;
+// Websocket target server settings
+#define ws_server_host "XXX.XXX.XXX.XXX"
+#define ws_server_port 65535
+#define ws_server_path "/"
 
-  static const int waterflowPin = 36;
-  
-};
-
-const int Config::server_port = 25565;
-const String Config::server_path = "/";
-const String Config::server_host = "192.168.XX.XX";
-
-const char* Config::ssid = "YFHD";
-const char* Config::pass = "HAHAASSHOLE";
+// Sensor pins settings
+#define pin_waterflow 36

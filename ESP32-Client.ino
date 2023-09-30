@@ -1,10 +1,9 @@
-#include <WiFi.h>
 #include "oled.h"
 #include "config.h"
 #include "websocket.h"
 
-WebSocketHandler websocket;
 SSD1306 oled;
+WebSocketHandler websocket;
 
 String data_buffer;
 
@@ -16,15 +15,8 @@ void setup() {
 
 
 void loop() {
-  
+  websocket.wifi_ensure(500);
+  websocket.server_ensure(500);
   bool result = websocket.send("Test Message");
-  if (!result) {
-    websocket.server_connect();
-    websocket.server_handshake();
-  }
-  data_buffer = websocket.listen();
-  
-  // wait to fully let the client disconnect
   delay(500);
-  Serial.println("[DEBUG] Loop end here.");
 }
