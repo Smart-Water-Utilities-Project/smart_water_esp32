@@ -4,6 +4,11 @@
 A program run on ESP32 that can detect water flow, temperature and control the valve. \
 Also can send data to database server via websocket.
 
+## How to use 
+1. Download whole project
+2. Duplicate file ``config.h.example`` and rename it to ``config.h``
+3. Finally open IDE and fill settings properly then flash!
+
 ## Division
 | Filename    | Programer |
 | ----------- | --------- |
@@ -11,4 +16,4 @@ Also can send data to database server via websocket.
 | waterflow.h | @William  |
 
 ## Used Libaray
-- [ESP32-Websocket](https://github.com/larkin/ESP32-Websocket/tree/master)
+- [ArduinoWebsockets](https://github.com/gilmaimon/ArduinoWebsockets)
