@@ -11,4 +11,4 @@ Also can send data to database server via websocket.
 | waterflow.h | @William  |
 
 ## Used Libaray
-- [ESP32-Websocket](https://github.com/larkin/ESP32-Websocket/tree/master)
+- [ArduinoWebsockets](https://github.com/gilmaimon/ArduinoWebsockets)
