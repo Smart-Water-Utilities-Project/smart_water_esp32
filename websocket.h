@@ -38,12 +38,14 @@ void WebSocketHandler::init(void) {
 
 bool WebSocketHandler::send(String str_buffer) {
   if (!(webSocketClient.available())) return false;
+  oled.show_upload(200);
   webSocketClient.send(str_buffer);
   return true;
 }
 
 void WebSocketHandler::listen() {
   webSocketClient.onMessage([&](WebsocketsMessage message){
+    oled.show_download(200);
     Serial.print("Got Message: ");
     Serial.println(message.data());
   });
@@ -55,9 +57,7 @@ void WebSocketHandler::wifi_ensure(int interval=-1) {
   if (!current_status) { wifi_connect(); }
   
   if (wifi_status^current_status) {
-    u8g2.drawXBM(112, 0, 16, 16, 
-      (current_status) ? gImage_wifi_connect : gImage_wifi_not_connect);
-    u8g2.sendBuffer();
+    oled.draw_wifi((current_status) ? gImage_wifi_connected : gImage_server_failure);
   }
   wifi_status = current_status;
 
@@ -75,17 +75,17 @@ void WebSocketHandler::wifi_connect() {
   }
 
   Serial.println("\n[Wifi] WiFi connected successfully, IP: " + WiFi.localIP().toString());
-  u8g2.drawXBM(112, 0, 16, 16, gImage_wifi_connect);
-  u8g2.sendBuffer();
+  oled.draw_wifi(gImage_wifi_connected);
 }
 
 void WebSocketHandler::server_ensure(int interval=-1) {
   if (interval > 0 && (millis() - server_last_check) <= interval) return;
   bool current_status = webSocketClient.available();
   if (server_status^current_status) {
-    u8g2.drawXBM(96, 0, 16, 16, 
-      (current_status) ? gImage_server_connected : gImage_server_not_connected);
-    u8g2.sendBuffer();
+    if (!current_status) Serial.println("[Websocket] Connection lost from the server");
+    oled.clear_upload();
+    oled.clear_download();
+    oled.draw_server((current_status) ? gImage_server_connected : gImage_server_failure);
   }
   
   if (!current_status) { server_connect(); }
@@ -96,52 +96,23 @@ void WebSocketHandler::server_ensure(int interval=-1) {
 
 bool WebSocketHandler::server_connect(void) {
   // Connect to the websocket server
-  Serial.println("[WiFi-Client] Attempting to connect to host: " + (char) *ws_server_host);
+  Serial.println("[Websocket] Attempting to connect to host: " + String(ws_server_host));
+  oled.draw_server(gImage_server_connecting);
+  
   if (webSocketClient.connect(ws_server_host, ws_server_port, ws_server_path)) {
-    Serial.println("[WiFi-Client] The host has been connected successfully");
-    u8g2.drawXBM(96, 0, 16, 16, gImage_server_connected);
-    u8g2.sendBuffer();
+    Serial.println("[Websocket] The host has been connected successfully");
+    oled.draw_server(gImage_server_connected);
   } else {
-    Serial.println("[WiFi-Client] Failed to connect to the host, retry in a seconds");
+    Serial.println("[Websocket] Failed to connect to the host, retry in a seconds");
+    oled.draw_server(gImage_server_failure);
+    delay(1000);
     server_ensure();
   }
 }
 
-/*void WebSocketHandler::socket_ensure(int interval=-1) {
-  if (0) {
-    u8g2.drawXBM(80, 0, 16, 16, gImage_handshake_successful);
-    u8g2.sendBuffer();
-    return;
-  } 
-  u8g2.drawXBM(80, 0, 16, 16, gImage_handshake_failed);
-  u8g2.sendBuffer();
-  delay(1000);
-  socket_handshake();
-}
-
-void WebSocketHandler::socket_handshake(void) {
-  // Handshake with the server
-  webSocketClient.path = (char*) ws_server_path;
-  webSocketClient.host = (char*) (String(ws_server_host) + ":" + String(ws_server_port)).c_str();
-  if (webSocketClient.handshake(wifiClient)) {
-    Serial.println("[WebSocket] Handshake successful");
-    u8g2.drawXBM(80, 0, 16, 16, gImage_handshake_successful);
-    u8g2.sendBuffer();
-    return;
-  } 
-  Serial.println("[WebSocket] Handshake failed, retry in a second");
-  u8g2.drawXBM(80, 0, 16, 16, gImage_handshake_failed);
-  u8g2.sendBuffer();
-  delay(5000);
-  socket_handshake();
-  
-}*/
-
 void WebSocketHandler::wifi_connect_icon(int interval) {
-  wifi_connect_animation = !wifi_connect_animation;
-  u8g2.drawXBM(112, 0, 16, 16, 
-    wifi_connect_animation ? gImage_wifi_connecting_0 : gImage_wifi_connecting_1);
-  u8g2.sendBuffer();
   delay(interval);
+  wifi_connect_animation = !wifi_connect_animation;
+  oled.draw_wifi(wifi_connect_animation ? gImage_wifi_connecting : gImage_wifi_blank);
   return;
 }

@@ -2,10 +2,11 @@
 #include "config.h"
 #include "websocket.h"
 
-SSD1306 oled;
+
 WebSocketHandler websocket;
 
 String data_buffer;
+int last_send = millis();
 
 void setup() {
   Serial.begin(115200);
@@ -15,8 +16,11 @@ void setup() {
 
 
 void loop() {
+  oled.ensure();
   websocket.wifi_ensure(500);
   websocket.server_ensure(500);
-  bool result = websocket.send("Test Message");
-  delay(500);
+  if (millis() - last_send >= 500) {
+    bool result = websocket.send("Test Message");
+    last_send = millis();
+  }
 }
