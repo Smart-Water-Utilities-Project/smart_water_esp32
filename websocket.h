@@ -21,7 +21,6 @@ class WebSocketHandler {
   private:
     bool wifi_status = false;
     void wifi_connect_icon(int);
-    bool wifi_connect_animation = false;
     unsigned long int wifi_last_check = millis();
 
     bool server_status = false;
@@ -53,7 +52,7 @@ void WebSocketHandler::listen() {
 
 void WebSocketHandler::wifi_ensure(int interval=-1) {
   if (interval > 0 && (millis() - wifi_last_check) <= interval) return;
-  bool current_status = WiFi.status();
+  bool current_status = WiFi.status() == WL_CONNECTED;
   if (!current_status) { wifi_connect(); }
   
   if (wifi_status^current_status) {
@@ -70,8 +69,9 @@ void WebSocketHandler::wifi_connect() {
   WiFi.begin((char*)wifi_ssid,(char*)wifi_pass);
   
   while (WiFi.status() != WL_CONNECTED) {
+    delay(250);
     Serial.print(".");
-    wifi_connect_icon(250);
+    oled.wifi_animation(0);
   }
 
   Serial.println("\n[Wifi] WiFi connected successfully, IP: " + WiFi.localIP().toString());
@@ -82,9 +82,12 @@ void WebSocketHandler::server_ensure(int interval=-1) {
   if (interval > 0 && (millis() - server_last_check) <= interval) return;
   bool current_status = webSocketClient.available();
   if (server_status^current_status) {
-    if (!current_status) Serial.println("[Websocket] Connection lost from the server");
-    oled.clear_upload();
-    oled.clear_download();
+    if (!current_status) {
+      Serial.println("[Websocket] Connection lost from the server");
+      webSocketClient.close();
+    }
+    oled.clear_upload(true);
+    oled.clear_download(true);
     oled.draw_server((current_status) ? gImage_server_connected : gImage_server_failure);
   }
   
@@ -105,14 +108,8 @@ bool WebSocketHandler::server_connect(void) {
   } else {
     Serial.println("[Websocket] Failed to connect to the host, retry in a seconds");
     oled.draw_server(gImage_server_failure);
-    delay(1000);
-    server_ensure();
+//    delay(1000);
+//    server_ensure();
   }
-}
-
-void WebSocketHandler::wifi_connect_icon(int interval) {
-  delay(interval);
-  wifi_connect_animation = !wifi_connect_animation;
-  oled.draw_wifi(wifi_connect_animation ? gImage_wifi_connecting : gImage_wifi_blank);
-  return;
+  delay(1000);
 }

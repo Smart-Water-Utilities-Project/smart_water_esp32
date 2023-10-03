@@ -19,21 +19,26 @@ class SSD1306 {
     void println(String);
     
     void show_upload(int);
-    void clear_upload(void);
+    void clear_upload(bool force=false);
 
     void show_download(int);
-    void clear_download(void);
+    void clear_download(bool force=false);
 
     void draw_wifi(const unsigned char*);
     void draw_server(const unsigned char*);
-    
+
+    void wifi_animation(int);
   private:
     int string_pos_y = 14;
     
     int upload_interval;
     int download_interval;
+    
     unsigned long last_upload;
     unsigned long last_download;
+
+    bool wifi_animation_state = false;
+    unsigned long last_wifi_animation = 0;
 
 };
 
@@ -75,17 +80,20 @@ void SSD1306::show_upload(int interval) {
   upload_interval = interval;
   u8g2.setFontMode(0);
   u8g2.setDrawColor(1);
-  u8g2.drawXBM(0, 0, 16, 16, gImage_socket_upload);
+  u8g2.drawXBM(80, 0, 8, 16, gImage_socket_upload);
   u8g2.sendBuffer();
 }
 
-void SSD1306::clear_upload() {
-  if (upload_interval < 0) return;
-  if (millis() - last_upload <= upload_interval) return;
+void SSD1306::clear_upload(bool force) {
+  if (!force) {
+    if (upload_interval < 0) return;
+    if (millis() - last_upload <= upload_interval) return;
+  }
+  
   upload_interval = -1;
   u8g2.setFontMode(1);
   u8g2.setDrawColor(0);
-  u8g2.drawRBox(0, 0, 16, 16, 0);
+  u8g2.drawRBox(80, 0, 8, 16, 0);
   u8g2.sendBuffer();
 }
 
@@ -94,17 +102,19 @@ void SSD1306::show_download(int interval) {
   download_interval = interval;
   u8g2.setFontMode(0);
   u8g2.setDrawColor(1);
-  u8g2.drawXBM(16, 0, 16, 16, gImage_socket_download);
+  u8g2.drawXBM(88, 0, 8, 16, gImage_socket_download);
   u8g2.sendBuffer();
 }
 
-void SSD1306::clear_download() {
-  if (download_interval < 0) return;
-  if (millis() - last_download <= download_interval) return;
+void SSD1306::clear_download(bool force) {
+  if (!force) {
+    if (download_interval < 0) return;
+    if (millis() - last_download <= download_interval) return;
+  }
   download_interval = -1;
   u8g2.setFontMode(1);
   u8g2.setDrawColor(0);
-  u8g2.drawRBox(16, 0, 16, 16, 0);
+  u8g2.drawRBox(88, 0, 8, 16, 0);
   u8g2.sendBuffer();
 }
 
@@ -120,6 +130,13 @@ void SSD1306::draw_wifi(const unsigned char* image) {
   u8g2.setDrawColor(1);
   u8g2.drawXBM(112, 0, 16, 16, (const uint8_t*) image);
   u8g2.sendBuffer();
+}
+
+void SSD1306::wifi_animation(int interval) {
+  if (millis() - last_wifi_animation < interval) return;
+  wifi_animation_state = !wifi_animation_state;
+  draw_wifi(wifi_animation_state ? gImage_wifi_connecting : gImage_wifi_blank);
+  last_wifi_animation = millis();
 }
 
 SSD1306 oled;

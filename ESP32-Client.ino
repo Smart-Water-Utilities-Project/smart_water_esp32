@@ -19,7 +19,7 @@ void loop() {
   oled.ensure();
   websocket.wifi_ensure(500);
   websocket.server_ensure(500);
-  if (millis() - last_send >= 500) {
+  if (millis() - last_send >= 1000) {
     bool result = websocket.send("Test Message");
     last_send = millis();
   }
