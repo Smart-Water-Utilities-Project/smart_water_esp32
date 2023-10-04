@@ -21,8 +21,8 @@ void loop() {
   websocket.wifi_ensure(500);
   websocket.server_ensure(500);
   if (millis() - last_send >= 1000) {
-    double water_flow_result = get_waterflow();
-    bool result = websocket.send(String(waterflow));
+    double water_flow_result = waterflow.get_waterflow();
+    bool result = websocket.send(String(water_flow_result));
     last_send = millis();
   }
 }

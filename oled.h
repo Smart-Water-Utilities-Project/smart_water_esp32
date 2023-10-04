@@ -30,7 +30,7 @@ class SSD1306 {
     void wifi_animation(int);
     void clear_area(int, int, int, int);
 
-    void set_waterflow(void);
+    void set_waterflow(unsigned int);
   private:
     int string_pos_y = 14;
     
@@ -136,16 +136,16 @@ void SSD1306::wifi_animation(int interval) {
   last_wifi_animation = millis();
 }
 
-void clear_area(int x, int y, int w, int h) {
+void SSD1306::clear_area(int x, int y, int w, int h) {
   u8g2.setFontMode(1);
   u8g2.setDrawColor(0);
   u8g2.drawRBox(x, y, w, h, 0);
 }
 
-void set_waterflow(String context) {
+void SSD1306::set_waterflow(unsigned int context) {
   clear_area(0, 16, 128, 16);
   u8g2.setFont(u8g2_font_unifont_t_chinese1);
-  u8g2.drawStr(0, 32, context.c_str());
+  u8g2.drawStr(0, 32, (const char*) String(context).c_str());
   u8g2.sendBuffer();
 }
 
