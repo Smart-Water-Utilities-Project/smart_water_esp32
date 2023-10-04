@@ -101,7 +101,9 @@ void SSD1306::clear_upload(bool force) {
 void SSD1306::show_download(int interval) {
   last_download = millis();
   download_interval = interval;
-  clear_area(88, 0, 8, 16);
+  u8g2.setFontMode(0);
+  u8g2.setDrawColor(1);
+  u8g2.drawXBM(88, 0, 8, 16, gImage_socket_download);
   u8g2.sendBuffer();
 }
 

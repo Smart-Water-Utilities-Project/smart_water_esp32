@@ -45,8 +45,7 @@ bool WebSocketHandler::send(String str_buffer) {
 void WebSocketHandler::listen() {
   webSocketClient.onMessage([&](WebsocketsMessage message){
     oled.show_download(200);
-    Serial.print("Got Message: ");
-    Serial.println(message.data());
+    Serial.println("Got Message: " + message.data());
   });
 }
 
@@ -101,15 +100,16 @@ bool WebSocketHandler::server_connect(void) {
   // Connect to the websocket server
   Serial.println("[Websocket] Attempting to connect to host: " + String(ws_server_host));
   oled.draw_server(gImage_server_connecting);
-  
+
   if (webSocketClient.connect(ws_server_host, ws_server_port, ws_server_path)) {
     Serial.println("[Websocket] The host has been connected successfully");
     oled.draw_server(gImage_server_connected);
-  } else {
-    Serial.println("[Websocket] Failed to connect to the host, retry in a seconds");
-    oled.draw_server(gImage_server_failure);
-//    delay(1000);
-//    server_ensure();
-  }
+    return true;
+  } 
+  
+  Serial.println("[Websocket] Failed to connect to the host, retry in a seconds");
+  oled.draw_server(gImage_server_failure);
+  // delay(1000);
+  // server_ensure();
   delay(1000);
 }
