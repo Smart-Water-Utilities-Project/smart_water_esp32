@@ -9,3 +9,4 @@
 
 // Sensor pins settings
 #define pin_waterflow 36
+#define delay_waterflow 1000 // Send data period (ms)
