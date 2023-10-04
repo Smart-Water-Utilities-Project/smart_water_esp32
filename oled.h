@@ -28,6 +28,9 @@ class SSD1306 {
     void draw_server(const unsigned char*);
 
     void wifi_animation(int);
+    void clear_area(int, int, int, int);
+
+    void set_waterflow(void);
   private:
     int string_pos_y = 14;
     
@@ -91,18 +94,14 @@ void SSD1306::clear_upload(bool force) {
   }
   
   upload_interval = -1;
-  u8g2.setFontMode(1);
-  u8g2.setDrawColor(0);
-  u8g2.drawRBox(80, 0, 8, 16, 0);
+  clear_area(80, 0, 8, 16);
   u8g2.sendBuffer();
 }
 
 void SSD1306::show_download(int interval) {
   last_download = millis();
   download_interval = interval;
-  u8g2.setFontMode(0);
-  u8g2.setDrawColor(1);
-  u8g2.drawXBM(88, 0, 8, 16, gImage_socket_download);
+  clear_area(88, 0, 8, 16);
   u8g2.sendBuffer();
 }
 
@@ -112,9 +111,7 @@ void SSD1306::clear_download(bool force) {
     if (millis() - last_download <= download_interval) return;
   }
   download_interval = -1;
-  u8g2.setFontMode(1);
-  u8g2.setDrawColor(0);
-  u8g2.drawRBox(88, 0, 8, 16, 0);
+  clear_area(88, 0, 8, 16);
   u8g2.sendBuffer();
 }
 
@@ -137,6 +134,19 @@ void SSD1306::wifi_animation(int interval) {
   wifi_animation_state = !wifi_animation_state;
   draw_wifi(wifi_animation_state ? gImage_wifi_connecting : gImage_wifi_blank);
   last_wifi_animation = millis();
+}
+
+void clear_area(int x, int y, int w, int h) {
+  u8g2.setFontMode(1);
+  u8g2.setDrawColor(0);
+  u8g2.drawRBox(x, y, w, h, 0);
+}
+
+void set_waterflow(String context) {
+  clear_area(0, 16, 128, 16);
+  u8g2.setFont(u8g2_font_unifont_t_chinese1);
+  u8g2.drawStr(0, 32, context.c_str());
+  u8g2.sendBuffer();
 }
 
 SSD1306 oled;

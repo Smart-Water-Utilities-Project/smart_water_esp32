@@ -1,11 +1,12 @@
 #include "oled.h"
 #include "config.h"
 #include "websocket.h"
-
+#include "waterflow.h"
 
 WebSocketHandler websocket;
-
+WaterflowHandler waterflow;
 String data_buffer;
+
 int last_send = millis();
 
 void setup() {
@@ -20,7 +21,8 @@ void loop() {
   websocket.wifi_ensure(500);
   websocket.server_ensure(500);
   if (millis() - last_send >= 1000) {
-    bool result = websocket.send("Test Message");
+    double water_flow_result = get_waterflow();
+    bool result = websocket.send(String(waterflow));
     last_send = millis();
   }
 }
