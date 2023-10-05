@@ -1,3 +1,8 @@
+# Visual Studio Code related
+build/
+.vscode/
+
+# Chinese font generator realted
 config.h
+u8g2Files/
 Generator.ps1
-/u8g2Files/*
