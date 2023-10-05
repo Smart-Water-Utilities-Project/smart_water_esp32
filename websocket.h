@@ -109,7 +109,6 @@ bool WebSocketHandler::server_connect(void) {
   
   Serial.println("[Websocket] Failed to connect to the host, retry in a seconds");
   oled.draw_server(gImage_server_failure);
-  // delay(1000);
-  // server_ensure();
   delay(1000);
+  server_ensure();
 }

@@ -3,10 +3,11 @@
 #include "websocket.h"
 #include "waterflow.h"
 
+
 WebSocketHandler websocket;
 WaterflowHandler waterflow;
-String data_buffer;
 
+String data_buffer;
 int last_send = millis();
 
 void setup() {
@@ -14,7 +15,6 @@ void setup() {
   oled.init();
   websocket.init();
 }
-
 
 void loop() {
   oled.ensure();
@@ -26,3 +26,8 @@ void loop() {
     last_send = millis();
   }
 }
+
+
+/*
+流量
+*/
