@@ -9,4 +9,8 @@
 
 // Sensor pins settings
 #define pin_waterflow 36
+#define pin_temperature 17
 #define delay_waterflow 1000 // Send data period (ms)
+
+// Debug section
+#define skip_websocket false
