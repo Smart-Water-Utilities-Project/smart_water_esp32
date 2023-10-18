@@ -27,6 +27,17 @@ class WebSocketHandler {
     unsigned long int server_last_check = millis();
 };
 
+#if skip_websocket
+void WebSocketHandler::init(void) {}
+bool WebSocketHandler::send(String) {return true;}
+void WebSocketHandler::listen(void) {}
+void WebSocketHandler::wifi_ensure(int) {}
+void WebSocketHandler::wifi_connect(void) {}
+void WebSocketHandler::server_ensure(int) {}
+bool WebSocketHandler::server_connect(void) {return true;}
+void WebSocketHandler::wifi_connect_icon(int) {}
+
+#else
 void WebSocketHandler::init(void) {
   wifi_connect();
   server_connect();
@@ -112,3 +123,5 @@ bool WebSocketHandler::server_connect(void) {
   delay(1000);
   server_ensure();
 }
+
+#endif
