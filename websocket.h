@@ -101,7 +101,10 @@ void WebSocketHandler::server_ensure(int interval=-1) {
     oled.draw_server((current_status) ? gImage_server_connected : gImage_server_failure);
   }
   
-  if (!current_status) { server_connect(); }
+  if (!current_status) { 
+    current_status = server_connect();
+    if (!current_status) server_ensure();
+  }
   server_status = current_status;
   webSocketClient.poll();
   return;
@@ -121,7 +124,7 @@ bool WebSocketHandler::server_connect(void) {
   Serial.println("[Websocket] Failed to connect to the host, retry in a seconds");
   oled.draw_server(gImage_server_failure);
   delay(1000);
-  server_ensure();
+  return false;
 }
 
 #endif
