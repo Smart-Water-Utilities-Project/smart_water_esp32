@@ -8,11 +8,11 @@ class WaterflowHandler {
   public:
     void init(void);
     double get(void);
-
+    float last_value;
   private:
     unsigned int l_hour;           // Calculated litres/hour
     unsigned long currentTime, cloopTime;
-    const int readpin = (int) pin_waterflow;
+    const int readpin = (int) PIN_WATERFLOW;
 };
 
 void WaterflowHandler::init (void) {
@@ -29,9 +29,9 @@ void WaterflowHandler::init (void) {
 double WaterflowHandler::get (void) {
   cloopTime = currentTime;              // Updates cloopTime
   // Pulse frequency (Hz) = 7.5Q, Q is flow rate in L/min. (Results in +/- 3% range)
-  l_hour = ((double) flow_frequency * 60 / 7.5); // (Pulse frequency x 60 min) / 7.5Q = flow rate in L/hour 
+  last_value = ((float) flow_frequency * 60 / 7.5); // (Pulse frequency x 60 min) / 7.5Q = flow rate in L/hour 
   flow_frequency = 0;                   // Reset Counter
-  Serial.println(String(l_hour) + " L/hour");            // Print litres/hour
+  WATERFLOW_LOGD("%d L/hour", last_value);
 
-  return l_hour;
+  return last_value;
 }

@@ -16,4 +16,6 @@ Also can send data to database server via websocket.
 | waterflow.h | @William  |
 
 ## Used Libaray
+- [ArduinoJson](https://arduinojson.org/?utm_source=meta&utm_medium=library.properties)
 - [ArduinoWebsockets](https://github.com/gilmaimon/ArduinoWebsockets)
+- [DallasTemperature](https://github.com/milesburton/Arduino-Temperature-Control-Library)

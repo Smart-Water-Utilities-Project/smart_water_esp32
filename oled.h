@@ -156,7 +156,7 @@ void SSD1306::set_waterflow(unsigned int context) {
 }
 
 void SSD1306::set_temperature(float context) {
-  clear_area(0, 32, 128, 16);
+  clear_area(0, 33, 128, 16);
   u8g2::setFontMode(0);
   u8g2::setDrawColor(1);
   u8g2::setFont(u8g2_font_unifont_t_chinese1);

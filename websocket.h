@@ -1,4 +1,5 @@
 #include <WiFi.h>
+#include "parser.h"
 #include <ArduinoWebsockets.h>
 
 using namespace websockets;
@@ -8,7 +9,7 @@ class WebSocketHandler {
     WiFiClient wifiClient;
     WebsocketsClient webSocketClient;
     
-    void init(void);
+    void init(void (*value)(String) = &null_func);
     bool send(String);
     void listen(void);
     
@@ -18,6 +19,11 @@ class WebSocketHandler {
     void server_ensure(int);
     bool server_connect(void);
 
+    void (*callback)(String);
+    void set_callback(void (*value)(String));
+
+    static void null_func(String data) {};
+
   private:
     bool wifi_status = false;
     void wifi_connect_icon(int);
@@ -25,6 +31,8 @@ class WebSocketHandler {
 
     bool server_status = false;
     unsigned long int server_last_check = millis();
+
+    
 };
 
 #if skip_websocket
@@ -38,11 +46,15 @@ bool WebSocketHandler::server_connect(void) {return true;}
 void WebSocketHandler::wifi_connect_icon(int) {}
 
 #else
-void WebSocketHandler::init(void) {
+void WebSocketHandler::set_callback(void (*value)(String)) {
+  callback = value;
+}
+
+void WebSocketHandler::init(void (*value)(String)) {
+  callback = value;
   wifi_connect();
   server_connect();
   listen();
-  
   return;
 }
 
@@ -56,7 +68,9 @@ bool WebSocketHandler::send(String str_buffer) {
 void WebSocketHandler::listen() {
   webSocketClient.onMessage([&](WebsocketsMessage message){
     oled.show_download(200);
-    Serial.println("Got Message: " + message.data());
+    String got_message = message.data();
+    WEBSOCKET_LOGD("Got Message: %s", got_message.c_str());
+    callback(got_message.c_str());
   });
 }
 
@@ -75,16 +89,15 @@ void WebSocketHandler::wifi_ensure(int interval=-1) {
 
 void WebSocketHandler::wifi_connect() {
   // Connect to a WiFi network
-  Serial.print("\n[Wifi] Connecting to " + String(wifi_ssid));
-  WiFi.begin((char*)wifi_ssid,(char*)wifi_pass);
+  WEBSOCKET_LOGI("Connecting to %s...", WIFI_SSID);
+  WiFi.begin((char*)WIFI_SSID,(char*)WIFI_PASS);
   
   while (WiFi.status() != WL_CONNECTED) {
     delay(250);
-    Serial.print(".");
     oled.wifi_animation(0);
   }
 
-  Serial.println("\n[Wifi] WiFi connected successfully, IP: " + WiFi.localIP().toString());
+  WEBSOCKET_LOGI("WiFi connected successfully, IP: %s", WiFi.localIP().toString().c_str());
   oled.draw_wifi(gImage_wifi_connected);
 }
 
@@ -93,7 +106,7 @@ void WebSocketHandler::server_ensure(int interval=-1) {
   bool current_status = webSocketClient.available();
   if (server_status^current_status) {
     if (!current_status) {
-      Serial.println("[Websocket] Connection lost from the server");
+      WEBSOCKET_LOGI("Connection lost from the server");
       webSocketClient.close();
     }
     oled.clear_upload(true);
@@ -112,16 +125,16 @@ void WebSocketHandler::server_ensure(int interval=-1) {
 
 bool WebSocketHandler::server_connect(void) {
   // Connect to the websocket server
-  Serial.println("[Websocket] Attempting to connect to host: " + String(ws_server_host));
+  WEBSOCKET_LOGI("Attempting to connect to host: %s", WS_SERVER_HOST);
   oled.draw_server(gImage_server_connecting);
 
-  if (webSocketClient.connect(ws_server_host, ws_server_port, ws_server_path)) {
-    Serial.println("[Websocket] The host has been connected successfully");
+  if (webSocketClient.connect(WS_SERVER_HOST, WS_SERVER_PORT, WS_SERVER_PATH)) {
+    WEBSOCKET_LOGI("The host has been connected successfully");
     oled.draw_server(gImage_server_connected);
     return true;
   } 
   
-  Serial.println("[Websocket] Failed to connect to the host, retry in a seconds");
+  WEBSOCKET_LOGE("Failed to connect to the host, retry in a seconds");
   oled.draw_server(gImage_server_failure);
   delay(1000);
   return false;

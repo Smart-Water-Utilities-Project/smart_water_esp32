@@ -5,6 +5,8 @@ class Temperature {
   public:
     float get(void);
     void init(void);
+
+    float last_value;
   
   private:
     OneWire oneWire;
@@ -13,12 +15,12 @@ class Temperature {
 };
 
 void Temperature::init(void) {
-  const int read_pin = (int) pin_temperature;
-  oneWire = OneWire(read_pin);
+  oneWire = OneWire((int) PIN_TEMPERATURE);
   DS18B20 = DallasTemperature(&oneWire);
 }
 
 float Temperature::get(void) {
   DS18B20.requestTemperatures(); 
-  return DS18B20.getTempCByIndex(0);
+  last_value = DS18B20.getTempCByIndex(0);
+  return last_value;
 }
