@@ -7,9 +7,9 @@ class WebsocketAPI {
 
   private:
     int client_id;
+    String timestamp;
     String acknowledge();
     String data_return(float, float, String);
-
 };
 
 String WebsocketAPI::acknowledge() {
@@ -59,7 +59,7 @@ String WebsocketAPI::process_request(char* context, float temp, float flow) {
 
     case 3:
       WEBSOCKET_LOGD("Get data requests from server");
-      char* timestamp = doc["d"]["ts"];
+      timestamp = doc["d"]["ts"].as<String>();
       return data_return(temp, flow, timestamp);
     
     default:
@@ -68,4 +68,3 @@ String WebsocketAPI::process_request(char* context, float temp, float flow) {
   }
 
 }
-
