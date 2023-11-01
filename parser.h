@@ -1,3 +1,4 @@
+#include "logger.h"
 #include <ArduinoJson.h>
 
 class WebsocketAPI {
@@ -7,12 +8,12 @@ class WebsocketAPI {
   private:
     int client_id;
     String acknowledge();
-    String data_return(float, float);
+    String data_return(float, float, String);
 
 };
 
 String WebsocketAPI::acknowledge() {
-  return R"rawliteral(.
+  return R"rawliteral(
   {
     \"op\": 2,
     \"d\": {
@@ -21,16 +22,22 @@ String WebsocketAPI::acknowledge() {
   })rawliteral";
 }
 
-String WebsocketAPI::data_return(float temp, float flow) {
+String WebsocketAPI::data_return(float temp, float flow, String time) {
   return R"rawliteral(
     {
       \"op\": 4,
       \"d\": {
         \"wt\": \")rawliteral" + String(temp) + R"rawliteral(\",
-        \"wf\": \")rawliteral" + String(flow) + R"rawliteral(\"
+        \"wf\": \")rawliteral" + String(flow) + R"rawliteral(\",
+        \"ts\": \")rawliteral" + time + R"rawliteral(\"
       }
     })rawliteral";
 }
+
+
+String a = R"rawliteral(
+
+)rawliteral";
 
 String WebsocketAPI::process_request(char* context, float temp, float flow) {
   StaticJsonDocument<200> doc;
@@ -46,13 +53,14 @@ String WebsocketAPI::process_request(char* context, float temp, float flow) {
 
   switch(op_code) {
     case 1: // Hello
-      client_id = doc["data"]["cid"];
+      client_id = doc["d"]["cid"];
       WEBSOCKET_LOGD("Get client id from server: %d", client_id);
       return acknowledge();
 
     case 3:
       WEBSOCKET_LOGD("Get data requests from server");
-      return data_return(temp, flow);
+      char* timestamp = doc["d"]["ts"];
+      return data_return(temp, flow, timestamp);
     
     default:
       WEBSOCKET_LOGE("Got invaild op_code from server");
