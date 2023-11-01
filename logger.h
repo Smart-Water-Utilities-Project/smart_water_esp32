@@ -12,13 +12,13 @@
 #endif
 
 #if OLED_LEVEL > 1
-  #define OLED_LOGW(...) LOG_LOGTAG("OLED","WARNNING");Serial.printf(__VA_ARGS__);Serial.println()
+  #define OLED_LOGW(...) LOG_LOGTAG("OLED"," WARN");Serial.printf(__VA_ARGS__);Serial.println()
 #else
   #define OLED_LOGW(...) do {} while (0)
 #endif
 
 #if OLED_LEVEL > 2
-  #define OLED_LOGI(...) LOG_LOGTAG("OLED","INFO");Serial.printf(__VA_ARGS__);Serial.println()
+  #define OLED_LOGI(...) LOG_LOGTAG("OLED"," INFO");Serial.printf(__VA_ARGS__);Serial.println()
 #else
   #define OLED_LOGI(...) do {} while (0)
 #endif
@@ -37,13 +37,13 @@
 #endif
 
 #if WEBSOCKET_LEVEL > 1
-  #define WEBSOCKET_LOGW(...) LOG_LOGTAG("WEBSOCKET","WARNNING");Serial.printf(__VA_ARGS__);Serial.println()
+  #define WEBSOCKET_LOGW(...) LOG_LOGTAG("WEBSOCKET"," WARN");Serial.printf(__VA_ARGS__);Serial.println()
 #else
   #define WEBSOCKET_LOGW(...) do {} while (0)
 #endif
 
 #if WEBSOCKET_LEVEL > 2
-  #define WEBSOCKET_LOGI(...) LOG_LOGTAG("WEBSOCKET","INFO");Serial.printf(__VA_ARGS__);Serial.println()
+  #define WEBSOCKET_LOGI(...) LOG_LOGTAG("WEBSOCKET"," INFO");Serial.printf(__VA_ARGS__);Serial.println()
 #else
   #define WEBSOCKET_LOGI(...) do {} while (0)
 #endif
@@ -62,13 +62,13 @@
 #endif
 
 #if WATERFLOW_LEVEL > 1
-  #define WATERFLOW_LOGW(...) LOG_LOGTAG("WATERFLOW","WARNNING");Serial.printf(__VA_ARGS__);Serial.println()
+  #define WATERFLOW_LOGW(...) LOG_LOGTAG("WATERFLOW"," WARN");Serial.printf(__VA_ARGS__);Serial.println()
 #else
   #define WATERFLOW_LOGW(...) do {} while (0)
 #endif
 
 #if WATERFLOW_LEVEL > 2
-  #define WATERFLOW_LOGI(...) LOG_LOGTAG("WATERFLOW","INFO");Serial.printf(__VA_ARGS__);Serial.println()
+  #define WATERFLOW_LOGI(...) LOG_LOGTAG("WATERFLOW"," INFO");Serial.printf(__VA_ARGS__);Serial.println()
 #else
   #define WATERFLOW_LOGI(...) do {} while (0)
 #endif
@@ -87,13 +87,13 @@
 #endif
 
 #if TEMPERATURE_LEVEL > 1
-  #define TEMPERATURE_LOGW(...) LOG_LOGTAG("TEMPERATURE","WARNNING");Serial.printf(__VA_ARGS__);Serial.println()
+  #define TEMPERATURE_LOGW(...) LOG_LOGTAG("TEMPERATURE"," WARN");Serial.printf(__VA_ARGS__);Serial.println()
 #else
   #define TEMPERATURE_LOGW(...) do {} while (0)
 #endif
 
 #if TEMPERATURE_LEVEL > 2
-  #define TEMPERATURE_LOGI(...) LOG_LOGTAG("TEMPERATURE","INFO");Serial.printf(__VA_ARGS__);Serial.println()
+  #define TEMPERATURE_LOGI(...) LOG_LOGTAG("TEMPERATURE"," INFO");Serial.printf(__VA_ARGS__);Serial.println()
 #else
   #define TEMPERATURE_LOGI(...) do {} while (0)
 #endif

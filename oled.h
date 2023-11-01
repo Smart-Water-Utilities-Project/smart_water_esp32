@@ -36,7 +36,7 @@ class SSD1306: public u8g2 {
     void wifi_animation(int);
     void clear_area(int, int, int, int);
 
-    void set_waterflow(unsigned int);
+    void set_waterflow(int);
     void set_temperature(float);
     
   private:
@@ -144,7 +144,7 @@ void SSD1306::clear_area(int x, int y, int w, int h) {
   u8g2::drawRBox(x, y, w, h, 0);
 }
 
-void SSD1306::set_waterflow(unsigned int context) {
+void SSD1306::set_waterflow(int context) {
   clear_area(0, 16, 128, 16);
   u8g2::setFontMode(0);
   u8g2::setDrawColor(1);

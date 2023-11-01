@@ -1,17 +1,17 @@
 #include "config.h"
 #include "logger.h"
 
-volatile int flow_frequency = 0;  // Measures flow meter pulses
+int flow_frequency = 0;  // Measures flow meter pulses
 
-void add_flow(void) { // Interrupt function
-  flow_frequency++;
-}; 
-    
+// Interrupt function
+void add_flow(void) { flow_frequency++; };
+
 class WaterflowHandler {
   public:
     void init(void);
-    double get(void);
+    float get(void);
     float last_value;
+
   private:
     unsigned int l_hour;           // Calculated litres/hour
     unsigned long currentTime, cloopTime;
@@ -20,7 +20,6 @@ class WaterflowHandler {
 
 void WaterflowHandler::init (void) {
   pinMode(readpin ,INPUT);
-
   attachInterrupt(readpin, add_flow, RISING); // Setup Interrupt
   sei(); // Enable interrupt, see http://arduino.cc/en/Reference/attachInterrupt
   currentTime = millis();
@@ -29,10 +28,11 @@ void WaterflowHandler::init (void) {
   return;
 }
 
-double WaterflowHandler::get (void) {
+float WaterflowHandler::get (void) {
   cloopTime = currentTime;              // Updates cloopTime
   // Pulse frequency (Hz) = 7.5Q, Q is flow rate in L/min. (Results in +/- 3% range)
-  last_value = ((float) flow_frequency * 60 / 7.5 / 2); // (Pulse frequency x 60 min) / 7.5Q = flow rate in L/hour 
+  // (Pulse frequency x 60 min) / 7.5Q = flow rate in L/hour, divide by 2 due to unknown reason
+  last_value = ((float) flow_frequency * 60 / 7.5 / 2); 
   flow_frequency = 0;                   // Reset Counter
   WATERFLOW_LOGD("%d L/hour", last_value);
 

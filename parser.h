@@ -13,31 +13,29 @@ class WebsocketAPI {
 };
 
 String WebsocketAPI::acknowledge() {
-  return R"rawliteral(
-  {
-    \"op\": 2,
-    \"d\": {
-      \"dt\": \"sensor\"
+  return 
+  R"rawliteral(
+    {
+      "op": 2,
+      "d": {
+        "dt": "sensor"
+      }
     }
-  })rawliteral";
+  )rawliteral";
 }
 
 String WebsocketAPI::data_return(float temp, float flow, String time) {
   return R"rawliteral(
     {
-      \"op\": 4,
-      \"d\": {
-        \"wt\": \")rawliteral" + String(temp) + R"rawliteral(\",
-        \"wf\": \")rawliteral" + String(flow) + R"rawliteral(\",
-        \"ts\": \")rawliteral" + time + R"rawliteral(\"
+      "op": 4,
+      "d": {
+        "wt": ")rawliteral" + String(temp) + R"rawliteral(,
+        "wf": ")rawliteral" + String(flow) + R"rawliteral(,
+        "ts": ")rawliteral" + time + R"rawliteral("
       }
-    })rawliteral";
+    }
+  )rawliteral";
 }
-
-
-String a = R"rawliteral(
-
-)rawliteral";
 
 String WebsocketAPI::process_request(char* context, float temp, float flow) {
   StaticJsonDocument<200> doc;
@@ -53,7 +51,7 @@ String WebsocketAPI::process_request(char* context, float temp, float flow) {
 
   switch(op_code) {
     case 1: // Hello
-      client_id = doc["d"]["cid"];
+      client_id = doc["d"]["id"];
       WEBSOCKET_LOGD("Get client id from server: %d", client_id);
       return acknowledge();
 

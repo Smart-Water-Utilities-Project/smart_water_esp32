@@ -11,15 +11,19 @@ Temperature ds18b20;
 WebSocketHandler websocket;
 WaterflowHandler waterflow;
 
-String data_buffer;
+String data_buffer, response;
 int last_send = millis();
+float temperature_result, waterflow_result;
+bool websocket_result;
 
 void callback(String data) {
   float temp = ds18b20.last_value;
   float flow =  waterflow.last_value;
   char* context = (char*) data.c_str();
-  String result = api.process_request(context, temp, flow);
-  Serial.println(result);
+  response = api.process_request(context, temp, flow);
+  websocket.send(response);
+  WEBSOCKET_LOGI("Response sent.");
+  // Serial.println(response);
 }
 
 void setup() {
@@ -35,11 +39,11 @@ void loop() {
   websocket.wifi_ensure(500);
   websocket.server_ensure(500);
   if (millis() - last_send >= 1000) {
-    float temperature = ds18b20.get();
-    double water_flow = waterflow.get();
-    bool result = websocket.send(String(water_flow));
-    oled.set_waterflow(water_flow);
-    oled.set_temperature(temperature);
+    temperature_result = ds18b20.get();
+    waterflow_result = waterflow.get();
+    // websocket_result = websocket.send(String((int) waterflow_result));
+    oled.set_waterflow(waterflow_result);
+    oled.set_temperature(temperature_result);
     last_send = millis();
     delay(10);
   }
