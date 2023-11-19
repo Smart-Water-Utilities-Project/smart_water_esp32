@@ -156,12 +156,12 @@ void SSD1306::set_waterflow(int context) {
 }
 
 void SSD1306::set_temperature(float context) {
-  clear_area(0, 33, 128, 16);
+  clear_area(0, 34, 128, 16);
   u8g2::setFontMode(0);
   u8g2::setDrawColor(1);
   u8g2::setFont(u8g2_font_unifont_t_chinese1);
   u8g2::setCursor(0, 48);
-  u8g2::print(String("水溫: "+String(context)+"ºC").c_str());
+  u8g2::print(String("水溫: "+String(context)+"°C").c_str());
 
   u8g2::sendBuffer();
 }

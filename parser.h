@@ -9,7 +9,7 @@ class WebsocketAPI {
     int client_id;
     String timestamp;
     String acknowledge();
-    String data_return(float, float, String);
+    String pack_data(float, float, String);
 };
 
 String WebsocketAPI::acknowledge() {
@@ -24,14 +24,14 @@ String WebsocketAPI::acknowledge() {
   )rawliteral";
 }
 
-String WebsocketAPI::data_return(float temp, float flow, String time) {
+String WebsocketAPI::pack_data(float temp, float flow, String time) {
   return R"rawliteral(
     {
       "op": 4,
       "d": {
-        "wt": ")rawliteral" + String(temp) + R"rawliteral(,
-        "wf": ")rawliteral" + String(flow) + R"rawliteral(,
-        "ts": ")rawliteral" + time + R"rawliteral("
+        "wt": )rawliteral" + String(temp) + R"rawliteral(,
+        "wf": )rawliteral" + String(flow) + R"rawliteral(,
+        "ts": )rawliteral" + time + R"rawliteral(
       }
     }
   )rawliteral";
@@ -58,7 +58,7 @@ String WebsocketAPI::process_request(char* context, float temp, float flow) {
     case 3:
       WEBSOCKET_LOGD("Get data requests from server");
       timestamp = doc["d"]["ts"].as<String>();
-      return data_return(temp, flow, timestamp);
+      return pack_data(temp, flow, timestamp);
     
     default:
       WEBSOCKET_LOGE("Got invaild op_code from server");

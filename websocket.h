@@ -16,12 +16,10 @@ class WebSocketHandler {
     void wifi_ensure(int);
     void wifi_connect(void);
 
-    void server_ensure(int);
+    void server_ensure(int, bool);
     bool server_connect(void);
 
     void (*callback)(String);
-    void set_callback(void (*value)(String));
-
     static void null_func(String data) {};
 
   private:
@@ -46,9 +44,6 @@ bool WebSocketHandler::server_connect(void) {return true;}
 void WebSocketHandler::wifi_connect_icon(int) {}
 
 #else
-void WebSocketHandler::set_callback(void (*value)(String)) {
-  callback = value;
-}
 
 void WebSocketHandler::init(void (*value)(String)) {
   callback = value;
@@ -97,16 +92,16 @@ void WebSocketHandler::wifi_connect() {
     oled.wifi_animation(0);
   }
 
-  WEBSOCKET_LOGI("WiFi connected successfully, IP: %s", WiFi.localIP().toString().c_str());
+  WEBSOCKET_LOGI("WiFi connected, IP: %s", WiFi.localIP().toString().c_str());
   oled.draw_wifi(gImage_wifi_connected);
 }
 
-void WebSocketHandler::server_ensure(int interval=-1) {
+void WebSocketHandler::server_ensure(int interval=-1, bool until_success=false) {
   if (interval > 0 && (millis() - server_last_check) <= interval) return;
   bool current_status = webSocketClient.available();
   if (server_status^current_status) {
     if (!current_status) {
-      WEBSOCKET_LOGI("Connection lost from the server");
+      WEBSOCKET_LOGI("Connection lost.");
       webSocketClient.close();
     }
     oled.clear_upload(true);
@@ -116,7 +111,7 @@ void WebSocketHandler::server_ensure(int interval=-1) {
   
   if (!current_status) { 
     current_status = server_connect();
-    if (!current_status) server_ensure();
+    if (!current_status && until_success) server_ensure();
   }
   server_status = current_status;
   webSocketClient.poll();
@@ -125,16 +120,16 @@ void WebSocketHandler::server_ensure(int interval=-1) {
 
 bool WebSocketHandler::server_connect(void) {
   // Connect to the websocket server
-  WEBSOCKET_LOGI("Attempting to connect to host: %s", WS_SERVER_HOST);
+  WEBSOCKET_LOGI("Connecting to the host: %s", WS_SERVER_HOST);
   oled.draw_server(gImage_server_connecting);
 
   if (webSocketClient.connect(WS_SERVER_HOST, WS_SERVER_PORT, WS_SERVER_PATH)) {
-    WEBSOCKET_LOGI("The host has been connected successfully");
+    WEBSOCKET_LOGI("Connection established.");
     oled.draw_server(gImage_server_connected);
     return true;
   } 
   
-  WEBSOCKET_LOGE("Failed to connect to the host, retry in a seconds");
+  WEBSOCKET_LOGE("Connection failed.");
   oled.draw_server(gImage_server_failure);
   delay(1000);
   return false;
