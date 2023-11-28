@@ -23,6 +23,7 @@ class WaterflowHandler {
     unsigned long cloopTime;
     const int readpin = (int) PIN_WATERFLOW;
 };
+
 int WaterflowHandler::flow_counter = 0;
 
 void WaterflowHandler::init(void) {
@@ -49,7 +50,7 @@ float WaterflowHandler::get(void) {
   // last_value = (flow_frequency * 60 / 7.5);     // Old formula       ref: https://www.rajguruelectronics.com/Product/1668/YF-S201%2012%20Water%20Flow%20Hall%20Sensor.pdf
   // last_value = (flow_frequency * 60 / 7.5 / 2); // Strange formula   ref: self-test
   // last_value = flow_frequency * 7.285 + 2.3725; // Desmos formula    ref: http://www.mantech.co.za/datasheets/products/yf-s201_sea.pdf
-  last_value = (flow_frequency * 60 / 7.5);
+  last_value = flow_frequency * 7.285;
   WATERFLOW_LOGD("%0.2f L/hour", last_value);
 
   flow_counter = 0;   // Reset Counter

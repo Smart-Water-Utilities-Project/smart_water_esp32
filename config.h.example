@@ -1,16 +1,31 @@
-// WiFi related settings
-#define wifi_ssid "wifi_name"
-#define wifi_pass "wifi_psk"
+// WiFi settings
+#define WIFI_SSID "WIFI_SSID"
+#define WIFI_PASS "WIFI_PASS"
 
-// Websocket target server settings
-#define ws_server_host "XXX.XXX.XXX.XXX"
-#define ws_server_port 65535
-#define ws_server_path "/"
+// Websocket server settings
+#define WS_SERVER_HOST "192.168.1.1"
+#define WS_SERVER_PATH "/"
+#define WS_SERVER_PORT 00
 
 // Sensor pins settings
-#define pin_waterflow 36
-#define pin_temperature 17
-#define delay_waterflow 1000 // Send data period (ms)
+#define PIN_WATERFLOW 00
+#define PIN_TEMPERATURE 00
+#define PIN_WATERPUMP 00
+#define PIN_WATERVALVE 00
 
 // Debug section
-#define skip_websocket false
+#define LOG_TIMESTAMP true
+
+/* LOG LEVEL
+ 1: Error
+ 2: Error + Warn
+ 3: Error + Warn + Info
+ 4: Error + Warn + Info + Debug
+*/
+#define OLED_LEVEL 4
+#define WEBSOCKET_LEVEL 4
+#define WATERFLOW_LEVEL 4
+#define TEMPERATURE_LEVEL 4
+
+/* Disable features */
+#define SKIP_WEBSOCKET false

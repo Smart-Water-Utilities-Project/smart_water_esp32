@@ -12,11 +12,10 @@
 #define ARDUINO_RUNNING_CORE 1
 #endif
 
-WebsocketAPI api;
+WebsocketAPI wsApi;
 Temperature ds18b20;
 WebSocketHandler websocket;
 WaterflowHandler waterflow;
-String data_buffer, response;
 
 int last_send = millis();
 float temperature_result, waterflow_result;
@@ -56,8 +55,7 @@ void callback(String data) {
   float temp = ds18b20.last_value;
   float flow =  waterflow.last_value;
   char* context = (char*) data.c_str();
-  response = api.process_request(context, temp, flow);
-  websocket.send(response);
+  websocket.send(wsApi.process_request(context, temp, flow));
   WEBSOCKET_LOGI("Response sent.");
   // Serial.println(response);
 }
