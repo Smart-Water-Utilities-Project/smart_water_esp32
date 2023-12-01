@@ -1,10 +1,11 @@
+#include "config.h"
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
 class Temperature {
   public:
-    float get(void);
     void init(void);
+    float ensure(void);
 
     float last_value;
   
@@ -19,7 +20,7 @@ void Temperature::init(void) {
   DS18B20 = DallasTemperature(&oneWire);
 }
 
-float Temperature::get(void) {
+float Temperature::ensure(void) {
   DS18B20.requestTemperatures(); 
   last_value = DS18B20.getTempCByIndex(0);
   return last_value;

@@ -4,7 +4,9 @@
 #include "oled.h"
 #include "websocket.h"
 #include "waterflow.h"
+#include "waterlevel.h"
 #include "temperature.h"
+#include "waterbump.h"
 
 #if CONFIG_FREERTOS_UNICORE
 #define ARDUINO_RUNNING_CORE 0
@@ -12,21 +14,24 @@
 #define ARDUINO_RUNNING_CORE 1
 #endif
 
-WebsocketAPI wsApi;
+Parser parser;
+WaterBump waterbump;
+WebSocket websocket;
+Waterflow waterflow;
 Temperature ds18b20;
-WebSocketHandler websocket;
-WaterflowHandler waterflow;
+WaterLevel waterlevel;
 
 int last_send = millis();
-float temperature_result, waterflow_result;
 
 void setup() {
   Serial.begin(115200);
   oled.init();
   ds18b20.init();
   waterflow.init();
-  xTaskCreatePinnedToCore(webclient_handle, "WebClient", 6144, NULL, 1, NULL, ARDUINO_RUNNING_CORE);
-  // websocket.init(&callback);
+  waterlevel.init();
+  waterbump.init();
+  
+  xTaskCreatePinnedToCore(clientHandle, "WebClient", 6144, NULL, 1, NULL, ARDUINO_RUNNING_CORE);
 }
 
 void loop() {
@@ -34,28 +39,36 @@ void loop() {
   // websocket.wifi_ensure(500);
   // websocket.server_ensure(500);
   if (millis() - last_send >= 1000) {
-    temperature_result = ds18b20.get();
-    waterflow_result = waterflow.get();
-    oled.set_waterflow(waterflow_result);
-    oled.set_temperature(temperature_result);
+    ds18b20.ensure();
+    waterflow.ensure();
+    waterlevel.ensure();
+    
+    waterbump.ensure(&waterlevel);
+
+    oled.drawWaterflow(waterflow.last_value);
+    oled.drawTemperature(ds18b20.last_value);
+    oled.drawLevel(waterlevel.lastCm);
+    oled.sendBuffer();
+
     last_send = millis();
-    delay(10);
+    Serial.printf("Current duration: %0.2fcm\n", waterlevel.lastCm);
   }
 }
 
-void webclient_handle(void *params) {
+void clientHandle(void *params) {
   websocket.init(&callback);
   while(1) {
-    websocket.wifi_ensure(500);
-    websocket.server_ensure(500);
+    websocket.wifiEnsure(500);
+    websocket.serverEnsure(500);
   }
 }
 
 void callback(String data) {
-  float temp = ds18b20.last_value;
-  float flow =  waterflow.last_value;
+  float* temp = &(ds18b20.last_value);
+  float* flow = &(waterflow.last_value);
+  float* dist = &(waterlevel.lastCm);
   char* context = (char*) data.c_str();
-  websocket.send(wsApi.process_request(context, temp, flow));
+  websocket.send(parser.processRequest(context, temp, flow, dist));
   WEBSOCKET_LOGI("Response sent.");
   // Serial.println(response);
 }

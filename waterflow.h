@@ -4,10 +4,10 @@
 #ifndef waterflow_include
 #define waterflow_include
 
-class WaterflowHandler {
+class Waterflow {
   public:
     void init(void);
-    float get(void);
+    float ensure(void);
     float last_value;
 
     // Measures flow meter pulses
@@ -24,9 +24,9 @@ class WaterflowHandler {
     const int readpin = (int) PIN_WATERFLOW;
 };
 
-int WaterflowHandler::flow_counter = 0;
+int Waterflow::flow_counter = 0;
 
-void WaterflowHandler::init(void) {
+void Waterflow::init(void) {
   pinMode(readpin ,INPUT);
   attachInterrupt(readpin, add_flow, RISING); // Setup Interrupt
   sei(); // Enable interrupt, see http://arduino.cc/en/Reference/attachInterrupt
@@ -35,7 +35,7 @@ void WaterflowHandler::init(void) {
   return;
 }
 
-float WaterflowHandler::get(void) {
+float Waterflow::ensure(void) {
   /* 
     Consider to every request won't exactly step on 1000ms
     The code below will calcuate the precise frequency

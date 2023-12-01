@@ -1,18 +1,18 @@
 #include "logger.h"
 #include <ArduinoJson.h>
 
-class WebsocketAPI {
+class Parser {
   public :
-    String process_request(char*, float, float);
+    String processRequest(char*, float*, float*, float*);
 
   private:
     int client_id;
     String timestamp;
     String acknowledge();
-    String pack_data(float, float, String);
+    String packData(float*, float*, float*, String);
 };
 
-String WebsocketAPI::acknowledge() {
+String Parser::acknowledge() {
   return 
   R"rawliteral(
     {
@@ -24,20 +24,21 @@ String WebsocketAPI::acknowledge() {
   )rawliteral";
 }
 
-String WebsocketAPI::pack_data(float temp, float flow, String time) {
+String Parser::packData(float* temp, float* flow, float* dist, String time) {
   return R"rawliteral(
     {
       "op": 4,
       "d": {
-        "wt": )rawliteral" + String(temp) + R"rawliteral(,
-        "wf": )rawliteral" + String(flow) + R"rawliteral(,
+        "wt": )rawliteral" + String(*temp) + R"rawliteral(,
+        "wf": )rawliteral" + String(*flow) + R"rawliteral(,
+        "wd": )rawliteral" + String(*dist) + R"rawliteral(,
         "ts": )rawliteral" + time + R"rawliteral(
       }
     }
   )rawliteral";
 }
 
-String WebsocketAPI::process_request(char* context, float temp, float flow) {
+String Parser::processRequest(char* context, float* temp, float* flow, float* distance) {
   StaticJsonDocument<200> doc;
   DeserializationError error = deserializeJson(doc, context);
 
@@ -58,7 +59,7 @@ String WebsocketAPI::process_request(char* context, float temp, float flow) {
     case 3:
       WEBSOCKET_LOGD("Get data requests from server");
       timestamp = doc["d"]["ts"].as<String>();
-      return pack_data(temp, flow, timestamp);
+      return packData(temp, flow, distance, timestamp);
     
     default:
       WEBSOCKET_LOGE("Got invaild op_code from server");
