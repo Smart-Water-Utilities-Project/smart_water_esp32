@@ -4,14 +4,39 @@
 
 // Websocket server settings
 #define WS_SERVER_HOST "192.168.1.1"
-#define WS_SERVER_PATH "/"
 #define WS_SERVER_PORT 00
+#define WS_SERVER_PATH "/ws"
 
 // Sensor pins settings
 #define PIN_WATERFLOW 00
 #define PIN_TEMPERATURE 00
 #define PIN_WATERPUMP 00
 #define PIN_WATERVALVE 00
+
+// Super sonic sensor 
+#define PIN_TRIG 12
+#define PIN_ECHO 13
+
+// Water tower 
+#define MAX_HEIFHT  1.235 // (unit: cm)
+#define BOTTOM_AREA 0.123 // (unit: cm2)
+#define OFFSET_HEIGHT 1.2 // (unit: cm)
+/*
+      ┌───────┐
+      └───────┘
+   ↑
+ ┃ │ OFFSET_HEIGHT ┃
+ ┃ ↓               ┃ 
+ ┝─────────────────┤
+ ┃ ↑               ┃
+ ┃ │               ┃
+ ┃ │ MAX_HEIFHT    ┃
+ ┃ │               ┃
+ ┃ │               ┃
+ ┃ ↓               ┃
+ └─────────────────┘
+ 
+*/
 
 // Debug section
 #define LOG_TIMESTAMP true
