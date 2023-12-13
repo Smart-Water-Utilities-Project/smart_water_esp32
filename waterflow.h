@@ -41,7 +41,7 @@ float Waterflow::ensure(void) {
     The code below will calcuate the precise frequency
   */
   float flow_frequency = (float) flow_counter / (millis()-cloopTime) * 1000;
-  WATERFLOW_LOGD("count=%d, freq=%0.2f (%dms)", flow_counter, flow_frequency, (millis()-cloopTime));
+  
 
   /*
     Pulse frequency (Hz) = 7.5Q, Q is flow rate in L/min. (Results in +/- 3% range)
@@ -51,7 +51,7 @@ float Waterflow::ensure(void) {
   // last_value = (flow_frequency * 60 / 7.5 / 2); // Strange formula   ref: self-test
   // last_value = flow_frequency * 7.285 + 2.3725; // Desmos formula    ref: http://www.mantech.co.za/datasheets/products/yf-s201_sea.pdf
   last_value = flow_frequency * 7.285;
-  WATERFLOW_LOGD("%0.2f L/hour", last_value);
+  LOGD("WATERFLOW", "count=%d, freq=%0.2f (%dms) -> %0.2f L/hour", flow_counter, flow_frequency, (millis()-cloopTime), last_value);
 
   flow_counter = 0;   // Reset Counter
   cloopTime = millis(); // Updates cloopTime

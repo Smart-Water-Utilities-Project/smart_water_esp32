@@ -44,7 +44,7 @@ String Parser::processRequest(char* context, float* temp, float* flow, float* di
 
   // Test if parsing succeeds.
   if (error) {
-    WEBSOCKET_LOGE("Unable to handle the json from sever.");
+    LOGE("PARSER", "Unable to handle the json from sever.");
     return "";
   }
 
@@ -53,16 +53,16 @@ String Parser::processRequest(char* context, float* temp, float* flow, float* di
   switch(op_code) {
     case 1: // Hello
       client_id = doc["d"]["id"];
-      WEBSOCKET_LOGD("Get client id from server: %d", client_id);
+      LOGD("PARSER", "Get client id from server: %d", client_id);
       return acknowledge();
 
     case 3:
-      WEBSOCKET_LOGD("Get data requests from server");
+      LOGD("PARSER", "Get data requests from server");
       timestamp = doc["d"]["ts"].as<String>();
       return packData(temp, flow, distance, timestamp);
     
     default:
-      WEBSOCKET_LOGE("Got invaild op_code from server");
+      LOGD("PARSER", "Got invaild op_code from server");
       return "";
   }
 

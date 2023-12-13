@@ -1,4 +1,5 @@
 #include "config.h"
+#include "logger.h"
 
 #ifndef waterlevel_include
 #define waterlevel_include
@@ -49,7 +50,7 @@ void WaterLevel::ensure() {
   duration = getDuration();
   lastCm = convertCm(duration);
   lastInch = convertInch(duration);
-
+  LOGD("WATERLEVL", "Current distance: %0.2fcm", lastCm);
   return;
 }
 

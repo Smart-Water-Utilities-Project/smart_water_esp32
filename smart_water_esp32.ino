@@ -2,11 +2,11 @@
 #include "logger.h"
 
 #include "oled.h"
+#include "waterbump.h"
 #include "websocket.h"
 #include "waterflow.h"
 #include "waterlevel.h"
 #include "temperature.h"
-#include "waterbump.h"
 
 #if CONFIG_FREERTOS_UNICORE
 #define ARDUINO_RUNNING_CORE 0
@@ -36,22 +36,19 @@ void setup() {
 
 void loop() {
   oled.ensure();
-  // websocket.wifi_ensure(500);
-  // websocket.server_ensure(500);
+
   if (millis() - last_send >= 1000) {
     ds18b20.ensure();
     waterflow.ensure();
     waterlevel.ensure();
     
     waterbump.ensure(&waterlevel);
-
+    oled.drawLevel(waterlevel.lastCm);
     oled.drawWaterflow(waterflow.last_value);
     oled.drawTemperature(ds18b20.last_value);
-    oled.drawLevel(waterlevel.lastCm);
     oled.sendBuffer();
 
     last_send = millis();
-    Serial.printf("Current duration: %0.2fcm\n", waterlevel.lastCm);
   }
 }
 
@@ -69,7 +66,7 @@ void callback(String data) {
   float* dist = &(waterlevel.lastCm);
   char* context = (char*) data.c_str();
   websocket.send(parser.processRequest(context, temp, flow, dist));
-  WEBSOCKET_LOGI("Response sent.");
+  LOGD("WEBSOCKET", "Response sent.");
   // Serial.println(response);
 }
 

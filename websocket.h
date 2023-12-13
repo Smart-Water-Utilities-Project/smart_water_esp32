@@ -67,7 +67,7 @@ void WebSocket::listen() {
   webSocketClient.onMessage([&](WebsocketsMessage message){
     oled.showDownload(200);
     String got_message = message.data();
-    WEBSOCKET_LOGD("Got Message: %s", got_message.c_str());
+    LOGD("WEBSOCKET", "Got Message: %s", got_message.c_str());
     callback(got_message.c_str());
   });
 }
@@ -87,7 +87,7 @@ void WebSocket::wifiEnsure(int interval=-1) {
 
 void WebSocket::wifiConnect() {
   // Connect to a WiFi network
-  WEBSOCKET_LOGI("Connecting to %s...", WIFI_SSID);
+  LOGI("WIFI", "Connecting to %s...", WIFI_SSID);
   WiFi.begin((char*)WIFI_SSID, (char*)WIFI_PASS);
   
   while (WiFi.status() != WL_CONNECTED) {
@@ -95,7 +95,7 @@ void WebSocket::wifiConnect() {
     oled.wifiAnimation(0);
   }
 
-  WEBSOCKET_LOGI("WiFi connected, IP: %s", WiFi.localIP().toString().c_str());
+  LOGI("WIFI", "WiFi connected, IP: %s", WiFi.localIP().toString().c_str());
   oled.drawWifi(gImage_wifi_connected);
 }
 
@@ -104,7 +104,7 @@ void WebSocket::serverEnsure(int interval=-1, bool until_success=false) {
   bool current_status = webSocketClient.available();
   if (server_status^current_status) {
     if (!current_status) {
-      WEBSOCKET_LOGI("Connection lost.");
+      LOGI("WEBSOCKET", "Connection lost.");
       webSocketClient.close();
     }
     oled.clearUpload(true);
@@ -123,16 +123,16 @@ void WebSocket::serverEnsure(int interval=-1, bool until_success=false) {
 
 bool WebSocket::serverConnect(void) {
   // Connect to the websocket server
-  WEBSOCKET_LOGI("Connecting to the host: %s", WS_SERVER_HOST);
+  LOGI("WEBSOCKET", "Connecting to : %s", WS_SERVER_HOST);
   oled.drawServer(gImage_server_connecting);
 
   if (webSocketClient.connect(WS_SERVER_HOST, WS_SERVER_PORT, WS_SERVER_PATH)) {
-    WEBSOCKET_LOGI("Connection established.");
+    LOGI("WEBSOCKET", "Connection established.");
     oled.drawServer(gImage_server_connected);
     return true;
   } 
   
-  WEBSOCKET_LOGE("Connection failed.");
+  LOGE("WEBSOCKET", "Connection failed.");
   oled.drawServer(gImage_server_failure);
   delay(1000);
   return false;

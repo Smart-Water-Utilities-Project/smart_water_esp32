@@ -11,6 +11,7 @@ class WaterBump {
 
 void WaterBump::init() {
   pinMode(PIN_WATERBUMP, OUTPUT);
+  digitalWrite(PIN_WATERBUMP, LOW);
 }
 
 void WaterBump::ensure(WaterLevel* waterlevel) {
@@ -18,7 +19,7 @@ void WaterBump::ensure(WaterLevel* waterlevel) {
   float _range = waterlevel->dynamicRange;
   float _target = waterlevel->targetPercent;
   float _percent = (MAX_HEIFHT - (waterlevel->lastCm - OFFSET_HEIGHT)) / MAX_HEIFHT;
-  Serial.printf("State=%d, range=%0.2f, target=%0.2f, percent=%0.2f\n", _state, _range, _target, _percent);
+  LOGD("WATERBUMP", "State=%d, range=%0.2f, target=%0.2f, percent=%0.2f", _state, _range, _target, _percent);
   
   // If bump is currently on and currnet percent is more than target + range
   if (_state && _percent > _target+_range) {
