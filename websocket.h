@@ -91,8 +91,8 @@ void WebSocket::wifiConnect() {
   WiFi.begin((char*)WIFI_SSID, (char*)WIFI_PASS);
   
   while (WiFi.status() != WL_CONNECTED) {
-    delay(250);
-    oled.wifiAnimation(0);
+    // delay(250);
+    oled.wifiAnimation(250);
   }
 
   LOGI("WIFI", "WiFi connected, IP: %s", WiFi.localIP().toString().c_str());

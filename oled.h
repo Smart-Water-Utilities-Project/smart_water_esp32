@@ -97,7 +97,7 @@ void SSD1306::showUpload(int interval) {
   u8g2::setFontMode(0);
   u8g2::setDrawColor(1);
   u8g2::drawXBM(80, 0, 8, 16, gImage_socket_upload);
-  u8g2::sendBuffer();
+  // u8g2::sendBuffer();
 }
 
 void SSD1306::clearUpload(bool force) {
@@ -108,7 +108,7 @@ void SSD1306::clearUpload(bool force) {
   
   upload_interval = -1;
   clearArea(80, 0, 8, 16);
-  u8g2::sendBuffer();
+  // u8g2::sendBuffer();
 }
 
 void SSD1306::showDownload(int interval) {
@@ -117,7 +117,7 @@ void SSD1306::showDownload(int interval) {
   u8g2::setFontMode(0);
   u8g2::setDrawColor(1);
   u8g2::drawXBM(88, 0, 8, 16, gImage_socket_download);
-  u8g2::sendBuffer();
+  // u8g2::sendBuffer();
 }
 
 void SSD1306::clearDownload(bool force) {
@@ -127,21 +127,21 @@ void SSD1306::clearDownload(bool force) {
   }
   download_interval = -1;
   clearArea(88, 0, 8, 16);
-  u8g2::sendBuffer();
+  // u8g2::sendBuffer();
 }
 
 void SSD1306::drawServer(const unsigned char* image) {
   u8g2::setFontMode(0);
   u8g2::setDrawColor(1);
   u8g2::drawXBM(96, 0, 16, 16, (const uint8_t*) image);
-  u8g2::sendBuffer();
+  // u8g2::sendBuffer();
 }
 
 void SSD1306::drawWifi(const unsigned char* image) {
   u8g2::setFontMode(0);
   u8g2::setDrawColor(1);
   u8g2::drawXBM(112, 0, 16, 16, (const uint8_t*) image);
-  u8g2::sendBuffer();
+  // u8g2::sendBuffer();
 }
 
 void SSD1306::wifiAnimation(int interval) {
