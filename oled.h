@@ -58,6 +58,8 @@ class SSD1306: public u8g2 {
 
     bool wifi_animation_state = false;
     unsigned long last_wifi_animation = 0;
+
+    bool sending_buffer = false;
 };
 
 void SSD1306::init(void) {
@@ -70,7 +72,7 @@ void SSD1306::init(void) {
   println("");
   println("[ Initializing ]");
   println(" Please wait... ");
-  u8g2::sendBuffer();
+  sendBuffer();
 }
 
 void SSD1306::println(String context) {
@@ -81,7 +83,7 @@ void SSD1306::println(String context) {
 }
 
 void SSD1306::send() {  //顯示暫存器內容
-  u8g2::sendBuffer();
+  sendBuffer();
   return;
 }
 
@@ -97,7 +99,7 @@ void SSD1306::showUpload(int interval) {
   u8g2::setFontMode(0);
   u8g2::setDrawColor(1);
   u8g2::drawXBM(80, 0, 8, 16, gImage_socket_upload);
-  // u8g2::sendBuffer();
+  sendBuffer();
 }
 
 void SSD1306::clearUpload(bool force) {
@@ -108,7 +110,7 @@ void SSD1306::clearUpload(bool force) {
   
   upload_interval = -1;
   clearArea(80, 0, 8, 16);
-  // u8g2::sendBuffer();
+  sendBuffer();
 }
 
 void SSD1306::showDownload(int interval) {
@@ -117,7 +119,7 @@ void SSD1306::showDownload(int interval) {
   u8g2::setFontMode(0);
   u8g2::setDrawColor(1);
   u8g2::drawXBM(88, 0, 8, 16, gImage_socket_download);
-  // u8g2::sendBuffer();
+  sendBuffer();
 }
 
 void SSD1306::clearDownload(bool force) {
@@ -127,21 +129,21 @@ void SSD1306::clearDownload(bool force) {
   }
   download_interval = -1;
   clearArea(88, 0, 8, 16);
-  // u8g2::sendBuffer();
+  sendBuffer();
 }
 
 void SSD1306::drawServer(const unsigned char* image) {
   u8g2::setFontMode(0);
   u8g2::setDrawColor(1);
   u8g2::drawXBM(96, 0, 16, 16, (const uint8_t*) image);
-  // u8g2::sendBuffer();
+  sendBuffer();
 }
 
 void SSD1306::drawWifi(const unsigned char* image) {
   u8g2::setFontMode(0);
   u8g2::setDrawColor(1);
   u8g2::drawXBM(112, 0, 16, 16, (const uint8_t*) image);
-  // u8g2::sendBuffer();
+  sendBuffer();
 }
 
 void SSD1306::wifiAnimation(int interval) {
@@ -191,7 +193,11 @@ void SSD1306::ensure() {
 }
 
 void SSD1306::sendBuffer() {
-  return u8g2::sendBuffer();
+  if (sending_buffer) return;
+  sending_buffer = true;
+  u8g2::sendBuffer();
+  sending_buffer = false;
+  return;
 }
 
 void SSD1306::drawBump(bool state) {

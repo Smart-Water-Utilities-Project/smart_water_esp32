@@ -19,3 +19,9 @@ Also can send data to database server via websocket.
 - [ArduinoJson](https://arduinojson.org/?utm_source=meta&utm_medium=library.properties)
 - [ArduinoWebsockets](https://github.com/gilmaimon/ArduinoWebsockets)
 - [DallasTemperature](https://github.com/milesburton/Arduino-Temperature-Control-Library)
+- [OneWire](https://github.com/PaulStoffregen/OneWire)
+
+## Hardware Specs
+Tank Empty: ``24`` cm
+Tank Full: ``14.5`` cm
+Tank Bottom Area: ``16`` cm
