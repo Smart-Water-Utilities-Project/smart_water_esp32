@@ -36,18 +36,15 @@ void setup() {
 
 void loop() {
   oled.ensure();
-  oled.sendBuffer();
+  
 
   if (millis() - last_send >= 1000) {
     ds18b20.ensure();
     waterflow.ensure();
     waterlevel.ensure();
-    
     waterbump.ensure(&waterlevel);
-    oled.drawLevel(waterlevel.lastCm);
-    oled.drawWaterflow(waterflow.last_value);
-    oled.drawTemperature(ds18b20.last_value);
-    
+
+    oled.update(waterlevel.lastCm, waterflow.last_value, ds18b20.last_value);
     last_send = millis();
   }
   

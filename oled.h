@@ -46,6 +46,8 @@ class SSD1306: public u8g2 {
 
     void drawBump(bool);
     void drawVavle(bool);
+
+    void update(float, float, float);
     
   private:
     int string_pos_y = 14;
@@ -190,6 +192,13 @@ void SSD1306::ensure() {
   clearUpload();
   clearDownload();
   return;
+}
+
+void SSD1306::update(float lastCm, float waterFlow, float temperature) {
+  oled.drawLevel(lastCm);
+  oled.drawWaterflow(waterFlow);
+  oled.drawTemperature(temperature);
+  oled.sendBuffer();
 }
 
 void SSD1306::sendBuffer() {
