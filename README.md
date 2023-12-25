@@ -22,6 +22,6 @@ Also can send data to database server via websocket.
 - [OneWire](https://github.com/PaulStoffregen/OneWire)
 
 ## Hardware Specs
-Tank Empty: ``24`` cm
-Tank Full: ``14.5`` cm
+Tank Empty: ``25`` cm
+Tank Full: ``13.5`` cm
 Tank Bottom Area: ``16`` cm

@@ -10,7 +10,7 @@
 // Sensor pins settings
 #define PIN_WATERFLOW 00
 #define PIN_TEMPERATURE 00
-#define PIN_WATERPUMP 00
+#define PIN_WATERBUMP 00
 #define PIN_WATERVALVE 00
 
 // Super sonic sensor 

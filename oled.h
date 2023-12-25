@@ -195,10 +195,10 @@ void SSD1306::ensure() {
 }
 
 void SSD1306::update(float lastCm, float waterFlow, float temperature) {
-  oled.drawLevel(lastCm);
-  oled.drawWaterflow(waterFlow);
-  oled.drawTemperature(temperature);
-  oled.sendBuffer();
+  drawLevel(lastCm);
+  drawWaterflow(waterFlow);
+  drawTemperature(temperature);
+  sendBuffer();
 }
 
 void SSD1306::sendBuffer() {
