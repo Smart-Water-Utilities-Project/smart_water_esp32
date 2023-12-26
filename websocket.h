@@ -51,8 +51,11 @@ void WebSocket::wifiConnectIcon(int) {}
 void WebSocket::init(void (*value)(String)) {
   callback = value;
   wifiConnect();
+  Serial.println("Hello");
   serverConnect();
+    Serial.println("Hello2");
   listen();
+    Serial.println("Hello3");
   return;
 }
 
@@ -91,7 +94,7 @@ void WebSocket::wifiConnect() {
   WiFi.begin((char*)WIFI_SSID, (char*)WIFI_PASS);
   
   while (WiFi.status() != WL_CONNECTED) {
-    // delay(250);
+    delay(50);
     oled.wifiAnimation(250);
   }
 

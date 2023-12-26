@@ -52,9 +52,11 @@ void loop() {
 
 void clientHandle(void *params) {
   websocket.init(&callback);
+
   while(1) {
     websocket.wifiEnsure(500);
     websocket.serverEnsure(500);
+    delay(50);
   }
 }
 

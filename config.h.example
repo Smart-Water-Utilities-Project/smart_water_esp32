@@ -8,10 +8,10 @@
 #define WS_SERVER_PATH "/ws"
 
 // Sensor pins settings
-#define PIN_WATERFLOW 36
-#define PIN_TEMPERATURE 35
-#define PIN_WATERBUMP 34
-#define PIN_WATERVALVE 33
+#define PIN_WATERFLOW 14
+#define PIN_TEMPERATURE 27
+#define PIN_WATERBUMP 33
+#define PIN_WATERVALVE 32
 
 // Super sonic sensor 
 #define PIN_TRIG 12
@@ -40,6 +40,7 @@
 */
 
 // Debug section
+#define LOG_LEVEL 4
 #define LOG_TIMESTAMP true
 
 /* LOG LEVEL
@@ -48,10 +49,6 @@
  3: Error + Warn + Info
  4: Error + Warn + Info + Debug
 */
-#define OLED_LEVEL 4
-#define WEBSOCKET_LEVEL 4
-#define WATERFLOW_LEVEL 4
-#define TEMPERATURE_LEVEL 4
 
 /* Disable features */
 #define SKIP_WEBSOCKET false
