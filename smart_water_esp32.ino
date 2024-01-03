@@ -7,6 +7,7 @@
 #include "waterflow.h"
 #include "waterlevel.h"
 #include "temperature.h"
+#include "watervalve.h"
 
 #if CONFIG_FREERTOS_UNICORE
 #define ARDUINO_RUNNING_CORE 0
@@ -30,6 +31,7 @@ void setup() {
   waterflow.init();
   waterlevel.init();
   waterbump.init();
+  watervalve.init();
   
   xTaskCreatePinnedToCore(clientHandle, "WebClient", 6144, NULL, 1, NULL, ARDUINO_RUNNING_CORE);
 }

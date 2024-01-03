@@ -1,4 +1,5 @@
 #include "logger.h"
+#include "watervalve.h"
 #include <ArduinoJson.h>
 
 class Parser {
@@ -7,6 +8,7 @@ class Parser {
 
   private:
     int client_id;
+    bool vavleState = true;
     String timestamp;
     String acknowledge();
     String packData(float*, float*, float*, String);
@@ -61,6 +63,13 @@ String Parser::processRequest(char* context, float* temp, float* flow, float* di
       timestamp = doc["d"]["ts"].as<String>();
       return packData(temp, flow, distance, timestamp);
     
+    case 0:
+      LOGD("PARSER", "Get command requests form server");
+      vavleState = doc["d"]["status"].as<bool>();
+      watervalve.set(vavleState);
+
+      return "";
+
     default:
       LOGD("PARSER", "Got invaild op_code from server");
       return "";
