@@ -9,9 +9,10 @@ class Parser {
   private:
     int client_id;
     bool vavleState = true;
+    double waterTarget;
     String timestamp;
     String acknowledge();
-    String packData(float*, float*, float*, String);
+    String packData(float*, float*, float*);
 };
 
 String Parser::acknowledge() {
@@ -26,15 +27,14 @@ String Parser::acknowledge() {
   )rawliteral";
 }
 
-String Parser::packData(float* temp, float* flow, float* dist, String time) {
+String Parser::packData(float* temp, float* flow, float* dist) {
   return R"rawliteral(
     {
       "op": 4,
       "d": {
         "wt": )rawliteral" + String(*temp) + R"rawliteral(,
         "wf": )rawliteral" + String(*flow) + R"rawliteral(,
-        "wd": )rawliteral" + String(*dist) + R"rawliteral(,
-        "ts": )rawliteral" + time + R"rawliteral(
+        "wd": )rawliteral" + String(*dist) + R"rawliteral(
       }
     }
   )rawliteral";
@@ -61,7 +61,9 @@ String Parser::processRequest(char* context, float* temp, float* flow, float* di
     case 3:
       LOGD("PARSER", "Get data requests from server");
       timestamp = doc["d"]["ts"].as<String>();
-      return packData(temp, flow, distance, timestamp);
+      waterTarget = doc["d"]["wl"].as<double>();
+      waterlevel.setTarget(waterTarget);
+      return packData(temp, flow, distance);
     
     case 0:
       LOGD("PARSER", "Get command requests form server");

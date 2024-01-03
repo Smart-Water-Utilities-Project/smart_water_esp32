@@ -20,7 +20,6 @@ WaterBump waterbump;
 WebSocket websocket;
 Waterflow waterflow;
 Temperature ds18b20;
-WaterLevel waterlevel;
 
 int last_send = millis();
 

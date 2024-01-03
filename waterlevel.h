@@ -10,7 +10,7 @@ class WaterLevel {
     void ensure();
     void setTarget(float);
     float dynamicRange = 0.1;
-    float targetPercent = 0.9;
+    float targetPercent = 1.0;
     float lastCm, lastInch;
 
   private:
@@ -60,4 +60,5 @@ void WaterLevel::setTarget(float target) {
   return;
 }
 
+WaterLevel waterlevel;
 #endif
