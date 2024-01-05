@@ -72,5 +72,5 @@ void callback(String data) {
 }
 
 /* For chinses font generator
-流量 水溫 °C 升 時 
+流量 水溫 °C 升 時 位
 */
